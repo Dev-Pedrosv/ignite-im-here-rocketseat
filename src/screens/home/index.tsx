@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Text,
   View,
@@ -10,28 +11,31 @@ import { Participants } from "../../components/participants";
 import { styles } from "./styles";
 
 export function Home() {
-  const participants = [
-    "Pedro",
-    "Rafael",
-    "Kayke",
-    "Marcus",
-    "Pedro",
-    "Rafael",
-    "Kayke",
-    "Marcus",
-  ];
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [participantName, setParticipantName] = useState("");
 
-  const handleParticipantAdd = (participant: string) => {
-    if (participants.includes("Pedro")) {
-      return Alert.alert("Participante existe");
+  const handleParticipantAdd = () => {
+    if (participants.includes(participantName)) {
+      return Alert.alert(
+        "Participante existe",
+        "Já existe um participante na lista de chamada com esse nome!"
+      );
     }
+
+    setParticipants((prevState) => [...prevState, participantName]);
+    setParticipantName("");
   };
 
   const handleParticipantRemove = (name: string) => {
     Alert.alert("Remover", `Remover o participante ${name}?`, [
       {
         text: "Sim",
-        onPress: () => Alert.alert("Deletado !"),
+        onPress: () => {
+          setParticipants((prevState) =>
+            prevState.filter((participant) => participant !== name)
+          );
+          Alert.alert("Deletado !");
+        },
       },
       {
         text: "Não",
@@ -42,15 +46,17 @@ export function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.eventName}>Nome do evento</Text>
+      <Text style={styles.eventName}>Encontro dos Dev's</Text>
 
-      <Text style={styles.eventDate}>Sexta, 11 de Novembro de 2022.</Text>
+      <Text style={styles.eventDate}>Sexta, 18 de Novembro de 2022.</Text>
 
       <View style={styles.form}>
         <TextInput
           style={styles.input}
           placeholder="Nome do participante"
           placeholderTextColor="#6b6b6b"
+          onChangeText={setParticipantName}
+          value={participantName}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
